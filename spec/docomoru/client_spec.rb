@@ -1,6 +1,9 @@
 require "active_support/core_ext/object/to_query"
 
 RSpec.describe Docomoru::Client do
+  before do
+    ENV["DOCOMO_APP_ID"] ||= "test"
+  end
   let(:client) do
     described_class.new(api_key: api_key)
   end
@@ -18,15 +21,30 @@ RSpec.describe Docomoru::Client do
       "test"
     end
 
+    let(:request_time) do
+      Time.now.to_s.tap { |str| str.slice!(" +0900") }
+    end
+
     let!(:stubbed_request) do
       stub_request(
         :post,
-        "https://api.apigw.smt.docomo.ne.jp/dialogue/v1/dialogue?" + {
+        "https://api.apigw.smt.docomo.ne.jp/naturalChatting/v1/dialogue?" + {
           APIKEY: api_key,
         }.to_query,
       ).with(
         body: {
-          utt: message,
+          language: "ja-JP",
+          botId: "Chatting",
+          appId: ENV["DOCOMO_APP_ID"],
+          voiceText: message,
+          clientData:{
+            option:{
+              mode:"dialog",
+              t:"kansai"
+            }
+          },
+          appRecvTime:"",
+          appSendTime:"#{request_time}"
         },
       )
     end
