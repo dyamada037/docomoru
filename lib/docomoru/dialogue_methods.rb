@@ -14,12 +14,6 @@ module Docomoru
           botId: "Chatting",
           appId: ENV["DOCOMO_APP_ID"],
           voiceText: message,
-          clientData:{
-            option:{
-              mode:"dialog",
-              t:"kansai"
-            }
-          },
           appRecvTime:"",
           appSendTime:"#{request_time}"
         ),
